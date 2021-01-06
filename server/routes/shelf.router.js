@@ -15,9 +15,9 @@ router.get('/', rejectUnauthenticated, (req, res) => {
   console.log('/shelf GET route');
   console.log('is authenticated?', req.isAuthenticated());
   console.log('user', req.user);
-  let queryText = `SELECT * FROM "item" WHERE "user_id" = $1`;
+  let queryText = 'SELECT * FROM item';
   
-  pool.query(queryText, [req.user.id]).then((result) => {
+  pool.query(queryText).then((result) => {
       res.send(result.rows);
   }).catch((error) => {
       console.log(error);
@@ -29,9 +29,21 @@ router.get('/', rejectUnauthenticated, (req, res) => {
 /**
  * Add an item for the logged in user to the shelf
  */
-router.post('/', (req, res) => {
-  // code here
+router.post('/', rejectUnauthenticated, (req, res) => {
+  console.log('made it to the shelf POST route')
+  console.log(req.body)
+  console.log('isAuthenticated?', req.isAuthenticated());
+
+  let queryText = `INSERT INTO item (description, image_url, user_id) VALUES ($1, $2, $3)`;
+  pool.query( queryText, [req.body.description, req.body.image_url, req.body.user_id])
+  .then(() => {
+    res.sendStatus(201); //do 201 because 201 means created
+  }).catch((error) => {
+    console.log(error);
+    res.sendStatus(500);
+  });
 });
+
 
 /**
  * Delete an item if it's something the logged in user added
