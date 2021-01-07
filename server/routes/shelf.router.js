@@ -33,9 +33,9 @@ router.post('/', rejectUnauthenticated, (req, res) => {
   console.log('made it to the shelf POST route')
   console.log(req.body)
   console.log('isAuthenticated?', req.isAuthenticated());
-
+  let id = req.user.id;
   let queryText = `INSERT INTO item (description, image_url, user_id) VALUES ($1, $2, $3)`;
-  pool.query( queryText, [req.body.description, req.body.image_url, req.body.user_id])
+  pool.query( queryText, [req.body.description, req.body.image_url, id])
   .then(() => {
     res.sendStatus(201); //do 201 because 201 means created
   }).catch((error) => {
@@ -44,13 +44,35 @@ router.post('/', rejectUnauthenticated, (req, res) => {
   });
 });
 
-
 /**
  * Delete an item if it's something the logged in user added
  */
-router.delete('/:id', (req, res) => {
+router.delete('/', rejectUnauthenticated, (req, res) => {
   // DELETE route code here
+  console.log('made it to the shelf DELETE route');
+  console.log('id from body', req.body.id);
+  console.log('user_id not from a body at all', req.user.id)
+  //you can other compare item user_id from the item to the user that is logged in
+  //or you can only render delete for items that match the logged in user_id 
+  // req.body.user_id is from ITEM table
+  // req.body.id is from USER table
+  // if the item to delete matches the user logged in's ID, delete.
+  let queryText ='';
+  if(req.body.id === req.user.id) { 
+    queryText = `DELETE FROM item WHERE id = $1;`;
+  }else {
+    console.log('You are not allowed to delete another user\'s item!'); 
+  }
+  pool.query( queryText, [req.body.id])
+  .then(() => {
+    res.sendStatus(202); //do 201 because 202 means created //200 means deleted  200 = Okay, 202 = Aceepted
+  }).catch((error) => {
+    console.log(error);
+    res.sendStatus(204); // do 204 becuase it means there was no content to delete
+  });
 });
+
+
 
 /**
  * Update an item if it's something the logged in user added
