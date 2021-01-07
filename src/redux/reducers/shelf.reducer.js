@@ -1,15 +1,10 @@
-const shelfReducer = (state = {}, action) => {
-    switch (action.type) {
-      case 'SET_SHELF':
-        return action.payload;
-      case 'UNSET_SHELF':
-        return {};
-      default:
-        return state;
-    }
-  };
-  
-  // user will be on the redux state at:
-  // state.user
-  export default shelfReducer;
-  
+const shelfReducer = (state = [], action) => { // in order to map we need to make sure that this is an array. Cannot map through an object
+  switch (action.type) {
+    case 'SET_SHELF':
+      return action.payload;
+    default:
+      return state;
+  }
+};
+
+export default shelfReducer;
