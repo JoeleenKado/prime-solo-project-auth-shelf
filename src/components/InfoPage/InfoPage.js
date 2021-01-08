@@ -61,7 +61,9 @@ const InfoPage = () => {
             <h2>User ID: {info.user_id}</h2>
             <p>Description: {info.description}</p>
             <img src={info.image_url} alt={info.description}></img>
-          {/* <button onClick={(e}>DELETE</button> */}
+            <button onClick={() => dispatch({type : "DELETE_ITEM", payload : info})}>DELETE</button> 
+            {/* left off here */}
+
           </div>
         ))}
       </div>
@@ -77,12 +79,14 @@ export default InfoPage;
 // componentDidMount() {
 //   this.props.dispatch({type: 'FETCH_SHELF'})
 // }
-
+//    const dispatch = this.props.dispatch;
+//    const shelfData = this.props.store.shelf;
 //   render() {
 //     return (
 //       <div>
 //         {JSON.stringify(this.props.store.shelf)}
 //         <p>Info Page</p>
+//          <button onClick={() => disptach({type:'DELETE_ITEM', payload: shelfData.id})}>DELETE</button>
 //       </div>
 //     )
 //   }

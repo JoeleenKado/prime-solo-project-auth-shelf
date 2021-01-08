@@ -21,12 +21,13 @@ function* sendShelf(action) {
 }
 
 function* deleteItem(action) {
+  console.log(action.payload);
   try {
-    yield axios.delete('/api/shelf', action.payload);
+    yield axios.delete(`/api/shelf/${action.payload.id}/${action.payload.user_id}`);
     yield fetchShelf();
-  
+    
   } catch (error) {
-    console.error('Error with deleting shelf data in saga');
+    console.error('Error with deleting shelf data in saga', error);
   }
 }
 
